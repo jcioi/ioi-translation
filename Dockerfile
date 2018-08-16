@@ -4,8 +4,8 @@ RUN echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula selec
 
 RUN apt-get update -qq && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-        python3 python3-pip python3-setuptools \
-        libfontconfig wkhtmltopdf xvfb libpq-dev ttf-mscorefonts-installer fonts-takao-pgothic && \
+        python3 python3-pip python3-setuptools git \
+        chromium-browser libpq-dev ttf-mscorefonts-installer fonts-takao-pgothic && \
     pip3 install -U pip
 
 COPY binaries/cpdf/cpdf /usr/local/bin/

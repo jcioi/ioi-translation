@@ -17,9 +17,15 @@
     <script type="text/javascript" src="{{ static_path }}/js/init-marked.js"></script>
     <script type="text/javascript" src="{{ static_path }}/libs/markdown/katex.js"></script>
     <script type="text/javascript" src="{{ static_path }}/libs/markdown/auto-render.min.js"></script>
-
+    {% if text_font_base64 %}
+    <style>
+        @font-face {
+            font-family: 'CustomTextFont';
+            src: url(data:font/truetype;charset=utf-8;base64,{{ text_font_base64 }})
+        }
+    </style>
+    {% endif %}
 </head>
-
 
 <body>
     <div class="markdown-body pdf">
@@ -45,50 +51,9 @@
     </div>
 </body>
 <script>
-
-    $(document).ready(function() {
-        {% if pdf_output %}
-        var mutated = Date.now();
-        var observer = new MutationObserver(function() { mutated = Date.now(); });
-        function checkMutation() {
-            if(Date.now() - 1000 < mutated)
-                return setTimeout(checkMutation, 100);
-            window.print();
-        }
-        observer.observe(document, {childList: true, subtree: true});
-        {% endif %}
-
-        text = $('#markdown').text();
-        $('#preview').html(marked(text));
-        renderMathInElement(document.getElementById('preview'));
-
-        {% if pdf_output %}
-        setTimeout(checkMutation, 100);
-        {% endif %}
-    });
-
     IMAGES_URL = '{{ images_path }}';
 
+    $('#preview').html(marked($('#markdown').text()));
+    renderMathInElement(document.getElementById('preview'));
 </script>
-
-<style>
-    {% if pdf_output %}
-    @media print {
-        body {
-            zoom: 1.2;
-        }
-        .header .logo img {
-            margin-top: 1px;
-        }
-
-    }
-    {% endif %}
-    {% if text_font_base64 %}
-        @font-face {
-            font-family: 'CustomTextFont';
-            src: url(data:font/truetype;charset=utf-8;base64,{{ text_font_base64 }})
-        }
-    {% endif %}
-</style>
-
 </html>

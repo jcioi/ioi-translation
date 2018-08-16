@@ -103,10 +103,15 @@ div.pdf {
     }
 
     div.pdf {
-        margin: 0;
+        margin: 1px;
         padding: 0;
-        border-width: 0;
+        border: 0 none;
         box-shadow: none;
         width: 100%;
+        min-height: 0;
+    }
+
+    .header .logo img {
+        margin-top: 1px;
     }
 }

@@ -29,15 +29,16 @@ DEBUG = False
 ALLOWED_HOSTS = ['*']
 USE_X_FORWARDED_HOST = True
 
-WKHTMLTOPDF_CMD_OPTIONS = {
-    'page-size': 'A4',
-    'margin-left': '0.75in',
-    'margin-right': '0.75in',
-    'margin-top': '0.62in',
-    'margin-bottom': '1in',
-    'print-media-type': '',
-    'no-stop-slow-scripts': '',
-    'javascript-delay': '30000',  # max wait until rendering finishes
+CHROMIUM_EXECUTABLE_PATH = '/usr/bin/chromium-browser'
+CHROMIUM_PDF_OPTIONS = {
+    'format': 'A4',
+    'margin': {
+        'left': '0.75in',
+        'right': '0.75in',
+        'top': '0.62in',
+        'bottom': '1in',
+    },
+    'printBackground': True,
 }
 
 

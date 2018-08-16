@@ -10,10 +10,9 @@ boto3==1.7.67
 django-import-export==1.0.1
 python-markdown-math
 django-redis
+git+https://github.com/miyakogi/pyppeteer@f0901a5816b93505e23d4b19883ff79dc38e494d
 ipython
 pytz
 django-websocket-redis
 openpyxl
-pdfkit==0.6.1
-xvfbwrapper==0.2.9
 raven

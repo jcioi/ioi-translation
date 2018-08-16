@@ -8,8 +8,8 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 
-import pdfkit
-from xvfbwrapper import Xvfb
+import asyncio
+import pyppeteer
 
 logger = logging.getLogger(__name__)
 
@@ -108,17 +108,26 @@ def pdf_response(pdf_file_path, file_name):
         return response
 
 
-def convert_html_to_pdf(html, pdf_file_path):
-    try:
-        html_file_path = '/tmp/{}.html'.format(str(uuid4()))
-        with open(html_file_path, 'wb') as f:
-            f.write(html.encode('utf-8'))
-        with Xvfb():
-            pdfkit.from_file(html_file_path, pdf_file_path, options=settings.WKHTMLTOPDF_CMD_OPTIONS)
-        os.remove(html_file_path)
-    except Exception as e:
-        logger.error(e)
+async def _convert_html_to_pdf(html_file_path, pdf_file_path):
+    browser = await pyppeteer.launch({
+        'executablePath': settings.CHROMIUM_EXECUTABLE_PATH,
+        'args': ['--no-sandbox'],
+    })
+    page = await browser.newPage()
+    await page.goto('file://{}'.format(html_file_path))
+    await page.pdf({'path': pdf_file_path, **settings.CHROMIUM_PDF_OPTIONS})
+    await browser.close()
 
+def convert_html_to_pdf(html, pdf_file_path):
+    uuid = str(uuid4())
+    html_file_path = '/tmp/{}.html'.format(uuid)
+
+    with open(html_file_path, 'wb') as f:
+        f.write(html.encode('utf-8'))
+
+    asyncio.get_event_loop().run_until_complete(
+        _convert_html_to_pdf(html_file_path, pdf_file_path))
+    os.remove(html_file_path)
 
 def add_page_numbers_to_pdf(pdf_file_path, task_name):
     color =  '-color "0.4 0.4 0.4" '
