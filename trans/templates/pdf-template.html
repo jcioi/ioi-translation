@@ -44,32 +44,6 @@
         <div id="preview" class="rendered_content" dir="{{direction}}" lang="{{language_code}}"></div>
     </div>
 </body>
-<script>
-
-    $(document).ready(function() {
-        {% if pdf_output %}
-        var mutated = Date.now();
-        var observer = new MutationObserver(function() { mutated = Date.now(); });
-        function checkMutation() {
-            if(Date.now() - 1000 < mutated)
-                return setTimeout(checkMutation, 100);
-            window.print();
-        }
-        observer.observe(document, {childList: true, subtree: true});
-        {% endif %}
-
-        text = $('#markdown').text();
-        $('#preview').html(marked(text));
-        renderMathInElement(document.getElementById('preview'));
-
-        {% if pdf_output %}
-        setTimeout(checkMutation, 100);
-        {% endif %}
-    });
-
-    IMAGES_URL = '{{ images_path }}';
-
-</script>
 
 <style>
     {% if pdf_output %}
@@ -91,4 +65,15 @@
     {% endif %}
 </style>
 
+<script>
+    IMAGES_URL = '{{ images_path }}';
+
+    text = $('#markdown').text();
+    $('#preview').html(marked(text));
+    renderMathInElement(document.getElementById('preview'));
+
+    {% if pdf_output %}
+    window.print();
+    {% endif %}
+</script>
 </html>

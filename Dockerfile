@@ -5,7 +5,10 @@ RUN echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula selec
 RUN apt-get update -qq && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         python3 python3-pip python3-setuptools \
-        libfontconfig wkhtmltopdf xvfb libpq-dev ttf-mscorefonts-installer fonts-takao-pgothic && \
+        curl libfontconfig xvfb libpq-dev ttf-mscorefonts-installer fonts-takao-pgothic && \
+    curl -fLsSo /tmp/wkhtmltox.deb https://downloads.wkhtmltopdf.org/0.12/0.12.5/wkhtmltox_0.12.5-1.bionic_amd64.deb && \
+    echo "db48fa1a043309c4bfe8c8e0e38dc06c183f821599dd88d4e3cea47c5a5d4cd3 /tmp/wkhtmltox.deb" | sha256sum -c && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends /tmp/wkhtmltox.deb && \
     pip3 install -U pip
 
 COPY binaries/cpdf/cpdf /usr/local/bin/
